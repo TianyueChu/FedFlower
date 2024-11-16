@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Black">
+    <option name="sdkName" value="flower" />
+  </component>
+  <component name="GithubDefaultAccount">
+    <option name="defaultAccountId" value="936258d1-818b-400a-a4a1-b5525d7de6ed" />
+  </component>
+  <component name="ProjectRootManager" version="2" project-jdk-name="flower" project-jdk-type="Python SDK" />
+</project>
