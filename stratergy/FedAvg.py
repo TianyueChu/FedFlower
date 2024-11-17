@@ -161,6 +161,10 @@ class FedCustomAvg(Strategy):
         if eval_res is None:
             return None
         loss, metrics = eval_res
+        # Save the model state dictionary
+        path = f"./results/server/round_{server_round}/model_state_dict.pth"
+        # Save the model (or state dictionary)
+        torch.save(self.net.state_dict(), path)
         return loss, metrics
 
 

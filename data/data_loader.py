@@ -5,10 +5,7 @@ from data.partitioner.visual_dirichlet_partitioner import VisualDirichletPartiti
 from data.partitioner.iid_partitioner import IidPartitioner
 from torch.utils.data import DataLoader
 
-
-NUM_PARTITIONS = 10
 BATCH_SIZE = 32
-
 
 def load_datasets(partition_id: int, num_partitions: int, distribution: str = "iid") -> tuple:
     """
@@ -31,6 +28,10 @@ def load_datasets(partition_id: int, num_partitions: int, distribution: str = "i
     4. Load the specified partition (identified by `partition_id`) and split it into 80% training and 20% validation data.
     5. Apply PyTorch transforms (e.g., normalization) to the images in the dataset.
     6. Create PyTorch DataLoaders for the training, validation, and global test sets.
+
+    :param num_partitions:
+    :param partition_id:
+    :param distribution:
     """
     # Step 1: Load the CelebA dataset
     dataset = datasets.load_dataset(path="flwrlabs/celeba")
@@ -40,7 +41,7 @@ def load_datasets(partition_id: int, num_partitions: int, distribution: str = "i
 
     # Step 3: Select partitioning strategy
     if distribution == "iid":
-        partitioner = IidPartitioner(num_partitions=num_partitions)
+        partitioner = IidPartitioner(num_partitions=num_partitions, partition_by="Demographic_Label")
     else:
         partitioner = VisualDirichletPartitioner(
             num_partitions=num_partitions,

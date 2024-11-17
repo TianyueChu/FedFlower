@@ -1,0 +1,10 @@
+Python >= 3.6
+torch >= 1.6.0
+flwr >= 0.11.0
+NumPy
+FileLock
+scikit-learn
+pandas
+matplotlib
+seaborn
+

@@ -4,8 +4,6 @@ from models.mobilenetv2 import CelebAMobileNet
 import os
 from filelock import FileLock
 
-import logging
-logging.basicConfig(level=logging.INFO)
 from configs.client_id import generate_client_id
 
 from flwr.client import ClientApp, NumPyClient
@@ -16,7 +14,6 @@ from task import set_weights, get_weights
 
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 client_id = generate_client_id()
-
 
 
 class FlowerClient(NumPyClient):
@@ -103,25 +100,37 @@ def get_or_create_partition_id(client_id, config_dir="./configs"):
 
     return assigned_id
 
-def client_fn(context: Context):
-    # Load model and data
-    net = CelebAMobileNet(num_classes=4).to(DEVICE)
-    # print(f"context: {context}")
-    # context: Context(node_id=-1, node_config={}, state=RecordSet(parameters_records={}, metrics_records={}, configs_records={}), run_config={})
-    # partition_id = context.node_config.get("partition-id", None)
-    # if partition_id is None:
-    #     raise KeyError("partition-id is missing in node_config")
-    partition_id = get_or_create_partition_id(client_id)
-    # num_partitions = context.node_config["num-partitions"]
-    num_partitions = 50
-    trainloader, valloader, _ = load_datasets(partition_id, num_partitions,"non-iid")
-    # local_epochs = context.run_config["local-epochs"]
-    local_epochs = 1
-    learning_rate = 0.001
 
-    # Return Client instance
+def client_fn(context: Context):
+    net = CelebAMobileNet(num_classes=4).to(DEVICE)
+    # Read the node_config to fetch data partition associated to this node
+    partition_id = context.node_config["partition-id"]
+    num_partitions = context.node_config["num-partitions"]
+    trainloader, valloader, _ = load_datasets(partition_id, num_partitions, "iid")
+    local_epochs = 1
+    learning_rate = 0.01
     return FlowerClient(net, trainloader, valloader, local_epochs, learning_rate, partition_id).to_client()
 
-number_clients = 50
-initialize_partition_file(number_clients)
-flwr.client.start_client(server_address="127.0.0.1:8080", client_fn=client_fn)
+
+# Run the client in the real setting
+# def client_fn(context: Context):
+#     # Load model and data
+#     net = CelebAMobileNet(num_classes=4).to(DEVICE)
+#     # print(f"context: {context}")
+#     # context: Context(node_id=-1, node_config={}, state=RecordSet(parameters_records={}, metrics_records={}, configs_records={}), run_config={})
+#     # partition_id = context.node_config.get("partition-id", None)
+#     # if partition_id is None:
+#     #     raise KeyError("partition-id is missing in node_config")
+#     partition_id = get_or_create_partition_id(client_id)
+#     # num_partitions = context.node_config["num-partitions"]
+#     num_partitions = 50
+#     trainloader, valloader, _ = load_datasets(partition_id, num_partitions,"non-iid")
+#     # local_epochs = context.run_config["local-epochs"]
+#     local_epochs = 1
+#     learning_rate = 0.001
+#
+#     # Return Client instance
+#     return FlowerClient(net, trainloader, valloader, local_epochs, learning_rate, partition_id).to_client()
+# number_clients = 50
+# initialize_partition_file(number_clients)
+# flwr.client.start_client(server_address="127.0.0.1:8080", client_fn=client_fn)

@@ -1,16 +1,27 @@
-# This is a sample Python script.
+import torch
+from flwr.simulation import run_simulation
+from flwr.server import ServerApp
+from flwr.client import ClientApp
+from client import client_fn
+from server import server_fn
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+DEVICE = torch.device("cpu")
 
+client = ClientApp(client_fn=client_fn)
+server = ServerApp(server_fn=server_fn)
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+backend_config = {"client_resources": None}
+if DEVICE.type == "cuda":
+    backend_config = {"client_resources": {"num_gpus": 1}}
 
+NUM_PARTITIONS = 50
 
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
+    run_simulation(
+        server_app=server,
+        client_app=client,
+        num_supernodes=NUM_PARTITIONS,
+        backend_config=backend_config,
+    )
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+
