@@ -5,6 +5,8 @@ from sklearn.metrics import precision_score, recall_score, f1_score, classificat
 import os
 import json
 from collections import OrderedDict
+from sklearn.metrics import confusion_matrix
+import numpy as np
 
 
 def get_weights(net):
@@ -180,6 +182,11 @@ def test_fn(model, test_loader, device="cuda", results_dir="./results/"):
     f1 = f1_score(all_labels, all_predictions, average="macro", zero_division=0)
     classification_rep = classification_report(all_labels, all_predictions, target_names=target_names, zero_division=0)  # using dynamic target_names and handling zero_division
 
+    # Compute confusion matrix
+    conf_matrix = confusion_matrix(all_labels, all_predictions, labels=unique_labels)
+    conf_matrix_file = os.path.join(results_dir, "confusion_matrix.npy")
+    np.save(conf_matrix_file, conf_matrix)
+
     # Save metrics to results folder
     metrics = {
         "Loss": avg_loss,
@@ -188,6 +195,7 @@ def test_fn(model, test_loader, device="cuda", results_dir="./results/"):
         "Recall": recall,
         "F1-Score": f1,
         "Classification Report": classification_rep,
+        "Confusion Matrix File": conf_matrix_file,
     }
 
     metrics_file = os.path.join(results_dir, "test_metrics.json")
