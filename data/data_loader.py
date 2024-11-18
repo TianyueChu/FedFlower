@@ -4,8 +4,9 @@ from data.fed_dataset import FedDataset
 from data.partitioner.visual_dirichlet_partitioner import VisualDirichletPartitioner
 from data.partitioner.iid_partitioner import IidPartitioner
 from torch.utils.data import DataLoader
+import configs.config as cfg
 
-BATCH_SIZE = 32
+BATCH_SIZE = cfg.BATCH_SIZE
 
 def load_datasets(partition_id: int, num_partitions: int, distribution: str = "iid") -> tuple:
     """

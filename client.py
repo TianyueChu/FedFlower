@@ -12,6 +12,7 @@ from task import train_fn, test_fn
 from data.data_loader import load_datasets
 from task import set_weights, get_weights
 
+import configs.config as cfg
 DEVICE = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 client_id = generate_client_id()
 
@@ -106,9 +107,9 @@ def client_fn(context: Context):
     # Read the node_config to fetch data partition associated to this node
     partition_id = context.node_config["partition-id"]
     num_partitions = context.node_config["num-partitions"]
-    trainloader, valloader, _ = load_datasets(partition_id, num_partitions, "iid")
-    local_epochs = 1
-    learning_rate = 0.01
+    trainloader, valloader, _ = load_datasets(partition_id, num_partitions, "non-iid")
+    local_epochs = cfg.LOCAL_EPOCHS
+    learning_rate = cfg.LearningRate
     return FlowerClient(net, trainloader, valloader, local_epochs, learning_rate, partition_id).to_client()
 
 

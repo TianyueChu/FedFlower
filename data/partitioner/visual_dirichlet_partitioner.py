@@ -148,7 +148,7 @@ class VisualDirichletPartitioner(Partitioner):
         sampling_try = 0
         while True:
             # Prepare data structure to store indices assigned to partition ids
-            partition_id_to_indices: dict[int, list[int]] = {}
+            partition_id_to_indices: dict[int, list[int]] = {nid: [] for nid in range(self._num_partitions)}
             # Perform Dirichlet-based partitioning
             for class_label in self._unique_classes:
                 # Access all the indices associated with class_label
