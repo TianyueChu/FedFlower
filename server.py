@@ -7,6 +7,7 @@ from stratergy.FedAvg import FedCustomAvg
 from models.mobilenetv2 import CelebAMobileNet
 from data.data_loader import load_datasets
 from task import get_weights
+import configs.config as cfg
 
 Device = "cuda" if torch.cuda.is_available() else "cpu"
 
@@ -38,7 +39,7 @@ def server_fn(context: Context) -> ServerAppComponents:
 
     # Configure the server for 5 rounds of training
 
-    config = ServerConfig(num_rounds=10)
+    config = ServerConfig(num_rounds=cfg.NUM_ROUNDS)
 
     return ServerAppComponents(strategy=strategy, config=config)
 
