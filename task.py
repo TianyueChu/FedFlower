@@ -7,6 +7,7 @@ import json
 from collections import OrderedDict
 from sklearn.metrics import confusion_matrix
 import numpy as np
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
 def get_weights(net):
@@ -17,14 +18,13 @@ def set_weights(net, parameters):
     state_dict = OrderedDict({k: torch.tensor(v) for k, v in params_dict})
     net.load_state_dict(state_dict, strict=True)
 
-def train_fn(model, train_loader, num_epochs=10, learning_rate=0.001, device="cuda"):
+def train_fn(model, train_loader, num_epochs, learning_rate, device="cuda"):
     """
     Train the CelebAMobileNet model and evaluate using precision, recall, and F1.
 
     Args:
         model (nn.Module): The model to train.
         train_loader (DataLoader): DataLoader for the training dataset.
-        val_loader (DataLoader): DataLoader for the validation dataset.
         num_epochs (int): Number of training epochs.
         learning_rate (float): Learning rate for the optimizer.
         device (str): Device to run the model on ("cuda" or "cpu").
@@ -37,7 +37,14 @@ def train_fn(model, train_loader, num_epochs=10, learning_rate=0.001, device="cu
 
     # Define loss function and optimizer
     criterion = nn.CrossEntropyLoss()
-    optimizer = optim.Adam(model.parameters(), lr=learning_rate)
+
+    # Define optimizer with weight decay
+    weight_decay = 1e-4
+    optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
+
+    # Define learning rate scheduler
+    scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.1, patience=2, verbose=True)
+
 
     for epoch in range(num_epochs):
         # Training phase
