@@ -4,17 +4,17 @@ from data.fed_dataset import FedDataset
 from data.partitioner.visual_dirichlet_partitioner import VisualDirichletPartitioner
 from data.partitioner.iid_partitioner import IidPartitioner
 from torch.utils.data import DataLoader
-import configs.config as cfg
 
-BATCH_SIZE = cfg.BATCH_SIZE
 
-def load_datasets(partition_id: int, num_partitions: int, distribution: str = "iid") -> tuple:
+def load_datasets(partition_id: int, num_partitions: int, batch_size:int, non_iid=False) -> tuple:
     """
     Load and partition the CelebA dataset for federated learning.
 
     Args:
         partition_id (int): The ID of the partition to load for the specific client.
         num_partitions (int): The total number of partitions to divide the dataset into.
+        batch_size (int): The batch size for the DataLoader objects.
+        non_iid (bool): Whether to use a non-IID partition
 
     Returns:
         tuple: A tuple containing three DataLoader objects:
@@ -32,7 +32,8 @@ def load_datasets(partition_id: int, num_partitions: int, distribution: str = "i
 
     :param num_partitions:
     :param partition_id:
-    :param distribution:
+    :param batch_size:
+    :param non_iid:
     """
     # Step 1: Load the CelebA dataset
     dataset = datasets.load_dataset(path="flwrlabs/celeba")
@@ -41,7 +42,7 @@ def load_datasets(partition_id: int, num_partitions: int, distribution: str = "i
     labeled_dataset = add_demographic_labels(dataset)
 
     # Step 3: Select partitioning strategy
-    if distribution == "iid":
+    if not non_iid:
         partitioner = IidPartitioner(num_partitions=num_partitions, partition_by="Demographic_Label")
     else:
         partitioner = VisualDirichletPartitioner(
@@ -59,9 +60,13 @@ def load_datasets(partition_id: int, num_partitions: int, distribution: str = "i
     partition_train_test = partition.train_test_split(test_size=0.2, seed=42)
 
     # Define PyTorch transformations
-    pytorch_transforms = transforms.Compose([
-        transforms.ToTensor(),
-        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    pytorch_transforms =  transforms.Compose([
+        transforms.Resize((224, 224)),  # Resize the image to match the model's input size
+        transforms.ToTensor(),  # Convert the image to a PyTorch tensor
+        transforms.Normalize(
+            mean=[0.485, 0.456, 0.406],  # Normalize the image using the mean and std of ImageNet
+            std=[0.229, 0.224, 0.225]
+        ),
     ])
 
     # Apply transformations to the dataset
@@ -72,12 +77,12 @@ def load_datasets(partition_id: int, num_partitions: int, distribution: str = "i
     partition_train_test = partition_train_test.with_transform(apply_transforms)
 
     # Step 5: Create DataLoaders for training, validation, and testing
-    trainloader = DataLoader(partition_train_test["train"], batch_size=BATCH_SIZE, shuffle=True)
-    valloader = DataLoader(partition_train_test["test"], batch_size=BATCH_SIZE)
+    trainloader = DataLoader(partition_train_test["train"], batch_size=batch_size, shuffle=True)
+    valloader = DataLoader(partition_train_test["test"], batch_size=batch_size)
 
     # Load global test set and apply transformations
     testset = fds.load_split("test").with_transform(apply_transforms)
-    testloader = DataLoader(testset, batch_size=BATCH_SIZE)
+    testloader = DataLoader(testset, batch_size=batch_size)
 
     return trainloader, valloader, testloader
 

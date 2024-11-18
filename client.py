@@ -1,5 +1,7 @@
 import flwr.client
 import torch
+from ray.tune.examples.pbt_dcgan_mnist.common import batch_size
+
 from models.mobilenetv2 import CelebAMobileNet
 import os
 from filelock import FileLock
@@ -107,7 +109,7 @@ def client_fn(context: Context):
     # Read the node_config to fetch data partition associated to this node
     partition_id = context.node_config["partition-id"]
     num_partitions = context.node_config["num-partitions"]
-    trainloader, valloader, _ = load_datasets(partition_id, num_partitions, "non-iid")
+    trainloader, valloader, _ = load_datasets(partition_id, num_partitions, batch_size=cfg.BATCH_SIZE, distribution="non-iid")
     local_epochs = cfg.LOCAL_EPOCHS
     learning_rate = cfg.LearningRate
     return FlowerClient(net, trainloader, valloader, local_epochs, learning_rate, partition_id).to_client()

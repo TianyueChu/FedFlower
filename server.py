@@ -13,7 +13,7 @@ Device = "cuda" if torch.cuda.is_available() else "cpu"
 
 params = get_weights(CelebAMobileNet(num_classes=4))
 
-_, _, test_data = load_datasets(0, 1)
+_, _, test_data = load_datasets(0, 1,batch_size=cfg.BATCH_SIZE)
 
 def server_fn(context: Context) -> ServerAppComponents:
     """Construct components that set the ServerApp behaviour.
