@@ -218,7 +218,15 @@ A Jupyter notebook, `Federated_Learning_with_Flower_and_CelebA.ipynb`, is includ
    python main.py
     ```
 
+### **Optional**
+- Run the federated learning in real-world settings using gRPC for client-server communication:
 
+
+- Start the server and client applications in separate terminals:
+```bash
+  python server.py
+  python client.py
+  ```
 ---
 ## **Results and Analysis**
 - Explore the saved evaluation metrics in the `results/server/` directory.
