@@ -18,13 +18,15 @@ def set_weights(net, parameters):
     state_dict = OrderedDict({k: torch.tensor(v) for k, v in params_dict})
     net.load_state_dict(state_dict, strict=True)
 
-def train_fn(model, train_loader, num_epochs, learning_rate, device="cuda"):
+
+def train_fn(model, train_loader, num_epochs=10, learning_rate=0.001, device="cuda"):
     """
     Train the CelebAMobileNet model and evaluate using precision, recall, and F1.
 
     Args:
         model (nn.Module): The model to train.
         train_loader (DataLoader): DataLoader for the training dataset.
+        val_loader (DataLoader): DataLoader for the validation dataset.
         num_epochs (int): Number of training epochs.
         learning_rate (float): Learning rate for the optimizer.
         device (str): Device to run the model on ("cuda" or "cpu").
@@ -43,8 +45,7 @@ def train_fn(model, train_loader, num_epochs, learning_rate, device="cuda"):
     optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=weight_decay)
 
     # Define learning rate scheduler
-    scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.1, patience=2, verbose=True)
-
+    scheduler = ReduceLROnPlateau(optimizer, mode="min", factor=0.1, patience=2)
 
     for epoch in range(num_epochs):
         # Training phase
@@ -93,10 +94,16 @@ def train_fn(model, train_loader, num_epochs, learning_rate, device="cuda"):
         train_accuracy = 100 * correct / total
         train_loss = running_loss / len(train_loader)
 
+        # Step the scheduler based on the validation loss or training loss
+        scheduler.step(train_loss)  # Pass the metric to the scheduler
+
+        # Manually log the learning rate
+        current_lr = optimizer.param_groups[0]["lr"]  # Access the learning rate directly
+
         # Compute additional metrics
-        precision = precision_score(all_labels, all_predictions, average="macro",zero_division=0)
-        recall = recall_score(all_labels, all_predictions, average="macro",zero_division=0)
-        f1 = f1_score(all_labels, all_predictions, average="macro",zero_division=0)
+        precision = precision_score(all_labels, all_predictions, average="macro", zero_division=0)
+        recall = recall_score(all_labels, all_predictions, average="macro", zero_division=0)
+        f1 = f1_score(all_labels, all_predictions, average="macro", zero_division=0)
 
         print(
             f"Epoch {epoch + 1} Summary: "
@@ -106,7 +113,7 @@ def train_fn(model, train_loader, num_epochs, learning_rate, device="cuda"):
 
         # Print detailed classification report
         print("\nClassification Report:\n")
-        print(classification_report(all_labels, all_predictions, target_names=target_names,zero_division=0))
+        print(classification_report(all_labels, all_predictions, target_names=target_names, zero_division=0))
         # Return metrics as a dictionary
 
     metrics = {

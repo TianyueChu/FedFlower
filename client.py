@@ -109,7 +109,7 @@ def client_fn(context: Context):
     # Read the node_config to fetch data partition associated to this node
     partition_id = context.node_config["partition-id"]
     num_partitions = context.node_config["num-partitions"]
-    trainloader, valloader, _ = load_datasets(partition_id, num_partitions, batch_size=cfg.BATCH_SIZE, distribution="non-iid")
+    trainloader, valloader, _ = load_datasets(partition_id, num_partitions, batch_size=cfg.BATCH_SIZE, non_iid=False)
     local_epochs = cfg.LOCAL_EPOCHS
     learning_rate = cfg.LearningRate
     return FlowerClient(net, trainloader, valloader, local_epochs, learning_rate, partition_id).to_client()
@@ -127,7 +127,7 @@ def client_fn(context: Context):
 #     partition_id = get_or_create_partition_id(client_id)
 #     # num_partitions = context.node_config["num-partitions"]
 #     num_partitions = 50
-#     trainloader, valloader, _ = load_datasets(partition_id, num_partitions,"non-iid")
+#     trainloader, valloader, _ = load_datasets(partition_id, num_partitions,"non-iid_0")
 #     # local_epochs = context.run_config["local-epochs"]
 #     local_epochs = 1
 #     learning_rate = 0.001

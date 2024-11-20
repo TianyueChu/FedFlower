@@ -11,7 +11,7 @@ class CelebAMobileNet(nn.Module):
         num_classes (int): The number of output classes for the classifier head.
     """
 
-    def __init__(self, num_classes=2):
+    def __init__(self, num_classes=4):
         super(CelebAMobileNet, self).__init__()
 
         # Load the pre-trained MobileNetV2 model

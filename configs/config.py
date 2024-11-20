@@ -1,8 +1,8 @@
 import torch
 
-BATCH_SIZE = 32
+BATCH_SIZE = 8
 NUM_ROUNDS = 10
-LearningRate = 0.01
+LearningRate = 0.001
 LOCAL_EPOCHS = 1
 NUM_PARTITIONS = 50
 
