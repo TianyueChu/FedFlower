@@ -40,7 +40,7 @@ federated-learning-celeba/
 ├── model/
 │   └── mobilenetv2.py
 ├── results/
-│   ├── server/
+│   ├── Federated_Learning_with_Flower_and_CelebA.ipynb
 ├── strategies/
 │   ├── FedAvg.py
 ├── client.py
@@ -65,7 +65,7 @@ federated-learning-celeba/
 - **`model/`**: Contains the definition of the training model.
   - **`mobilenetv2.py`**: Implements a MobileNetV2 model with a frozen feature extractor and customizable classifier head.
 - **`results/`**: Stores results and logs from experiments.
-  - **`server/`**: Contains server-side evaluation results and metrics.
+  - **`Federated_Learning_with_Flower_and_CelebA.ipynb`**: Contains detailed performance assessments and visualizations.
 - **`strategies/`**: Includes custom federated learning strategies.
   - **`FedAvg.py`**: Implementation of the Federated Averaging algorithm.
 - **`client.py`**: Defines the behavior of federated clients, including local training and communication with the server.
