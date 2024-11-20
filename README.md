@@ -15,11 +15,11 @@ This project demonstrates a federated learning setup using the [Flower](https://
 ---
 ## Requirements
 
-This project requires Python 3.6 or higher. The complete list of dependencies is in `requirements.txt`.
+This project requires Python 3.9 or higher. The complete list of dependencies is in `requirements.txt`.
 
 ### Installation
 
-1. Install Python 3.6 or higher.
+1. Install Python 3.9 or higher.
 2. Install the required dependencies:
    ```bash
    pip install -r requirements.txt
@@ -219,15 +219,13 @@ A Jupyter notebook, `Federated_Learning_with_Flower_and_CelebA.ipynb`, is includ
     ```
 
 ### **Optional**
-- Run the federated learning in real-world settings using gRPC for client-server communication:
+Run the federated learning in real-world settings using gRPC for client-server communication:
 
-
-- Start the server and client applications in separate terminals:
-- for server, comment out the line
+- for ``server.py``, comment out the line
     ```python
     server = fl.server.start_server(server_address="0.0.0.0:8080", config=ServerConfig(num_rounds=10), strategy=strategy)
     ```
-- for client, change the lines from
+- for ``client.py``, change the lines from
 ```python
   partition_id = context.node_config["partition-id"]
   num_partitions = context.node_config["num-partitions"]
@@ -242,6 +240,7 @@ Comment out the lines
 initialize_partition_file(cfg.NUM_PARTITIONS)
 flwr.client.start_client(server_address="127.0.0.1:8080", client_fn=client_fn)
 ```
+- Start the server and client applications in separate terminals:
 
 - Run the server and client applications:
 ```bash

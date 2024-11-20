@@ -43,7 +43,18 @@ def server_fn(context: Context) -> ServerAppComponents:
 
     return ServerAppComponents(strategy=strategy, config=config)
 
-
+strategy = FedCustomAvg(
+        fraction_fit=1.0,  # Sample 100% of available clients for training
+        fraction_evaluate=50,  # Sample 100% of available clients for evaluation
+        min_fit_clients=40,  # Never sample less than 5 clients for training
+        min_evaluate_clients=40,  # Never sample less than 5 clients for evaluation
+        min_available_clients=40,  # Wait until all 5 clients are available
+        initial_parameters=ndarrays_to_parameters(params),
+        evaluate_fn=test_fn,
+        server_testset=test_data,
+        net=CelebAMobileNet(num_classes=4),
+        device=Device,
+    )
 
 # Run the server in the real setting
-# fl.server.start_server(server_address="0.0.0.0:8080", config=ServerConfig(num_rounds=10), strategy=strategy)
+# fl.server.start_server(server_address="0.0.0.0:8080", config=ServerConfig(num_rounds=cfg.NUM_ROUNDS), strategy=strategy)
