@@ -26,7 +26,6 @@ def train_fn(model, train_loader, num_epochs=10, learning_rate=0.001, device="cu
     Args:
         model (nn.Module): The model to train.
         train_loader (DataLoader): DataLoader for the training dataset.
-        val_loader (DataLoader): DataLoader for the validation dataset.
         num_epochs (int): Number of training epochs.
         learning_rate (float): Learning rate for the optimizer.
         device (str): Device to run the model on ("cuda" or "cpu").
@@ -101,9 +100,9 @@ def train_fn(model, train_loader, num_epochs=10, learning_rate=0.001, device="cu
         current_lr = optimizer.param_groups[0]["lr"]  # Access the learning rate directly
 
         # Compute additional metrics
-        precision = precision_score(all_labels, all_predictions, average="macro", zero_division=0)
-        recall = recall_score(all_labels, all_predictions, average="macro", zero_division=0)
-        f1 = f1_score(all_labels, all_predictions, average="macro", zero_division=0)
+        precision = precision_score(all_labels, all_predictions, average="macro",zero_division=0)
+        recall = recall_score(all_labels, all_predictions, average="macro",zero_division=0)
+        f1 = f1_score(all_labels, all_predictions, average="macro",zero_division=0)
 
         print(
             f"Epoch {epoch + 1} Summary: "
@@ -113,7 +112,7 @@ def train_fn(model, train_loader, num_epochs=10, learning_rate=0.001, device="cu
 
         # Print detailed classification report
         print("\nClassification Report:\n")
-        print(classification_report(all_labels, all_predictions, target_names=target_names, zero_division=0))
+        print(classification_report(all_labels, all_predictions, target_names=target_names,zero_division=0))
         # Return metrics as a dictionary
 
     metrics = {

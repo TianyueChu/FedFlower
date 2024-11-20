@@ -127,7 +127,6 @@ def client_fn(context: Context):
 #     partition_id = get_or_create_partition_id(client_id)
 #     # num_partitions = context.node_config["num-partitions"]
 #     num_partitions = 50
-#     trainloader, valloader, _ = load_datasets(partition_id, num_partitions,"non-iid_0")
 #     # local_epochs = context.run_config["local-epochs"]
 #     local_epochs = 1
 #     learning_rate = 0.001
