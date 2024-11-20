@@ -1,13 +1,6 @@
-Python >= 3.6
-json
-os
-re
 matplotlib
 pandas
 scikit-learn
-collections
-typing
-time
 numpy
 flwr
 flwr[simulation]
@@ -15,3 +8,4 @@ flwr-datasets[vision]
 torch
 torchvision
 datasets
+

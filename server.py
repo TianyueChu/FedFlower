@@ -45,10 +45,5 @@ def server_fn(context: Context) -> ServerAppComponents:
 
 
 
-
-
-
-
-
 # Run the server in the real setting
 # fl.server.start_server(server_address="0.0.0.0:8080", config=ServerConfig(num_rounds=10), strategy=strategy)

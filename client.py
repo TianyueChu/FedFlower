@@ -126,13 +126,13 @@ def client_fn(context: Context):
 #     #     raise KeyError("partition-id is missing in node_config")
 #     partition_id = get_or_create_partition_id(client_id)
 #     # num_partitions = context.node_config["num-partitions"]
-#     num_partitions = 50
+#     num_partitions = cfg.NUM_PARTITIONS
 #     # local_epochs = context.run_config["local-epochs"]
-#     local_epochs = 1
-#     learning_rate = 0.001
+#     local_epochs = cfg.LOCAL_EPOCHS
+#     learning_rate = cfg.LearningRate
 #
 #     # Return Client instance
 #     return FlowerClient(net, trainloader, valloader, local_epochs, learning_rate, partition_id).to_client()
-# number_clients = 50
-# initialize_partition_file(number_clients)
+#
+# initialize_partition_file(cfg.NUM_PARTITIONS)
 # flwr.client.start_client(server_address="127.0.0.1:8080", client_fn=client_fn)

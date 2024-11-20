@@ -201,8 +201,8 @@ A Jupyter notebook, `Federated_Learning_with_Flower_and_CelebA.ipynb`, is includ
 ### **Setup**
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/federated-learning-celeba.git
-   cd federated-learning-celeba
+   git clone https://github.com/TianyueChu/FedFlower.git
+   cd FedFlower
     ```
 
 2. Install the required dependencies:
@@ -223,10 +223,32 @@ A Jupyter notebook, `Federated_Learning_with_Flower_and_CelebA.ipynb`, is includ
 
 
 - Start the server and client applications in separate terminals:
+- for server, comment out the line
+    ```python
+    server = fl.server.start_server(server_address="0.0.0.0:8080", config=ServerConfig(num_rounds=10), strategy=strategy)
+    ```
+- for client, change the lines from
+```python
+  partition_id = context.node_config["partition-id"]
+  num_partitions = context.node_config["num-partitions"]
+```
+to 
+```python
+  partition_id = get_or_create_partition_id(client_id)
+  num_partitions = cfg.NUM_PARTITIONS
+```
+Comment out the lines
+```python
+initialize_partition_file(cfg.NUM_PARTITIONS)
+flwr.client.start_client(server_address="127.0.0.1:8080", client_fn=client_fn)
+```
+
+- Run the server and client applications:
 ```bash
-  python server.py
-  python client.py
-  ```
+python server.py
+python client.py
+```
+
 ---
 ## **Results and Analysis**
 - Explore the saved evaluation metrics in the `results/server/` directory.
